@@ -7,7 +7,6 @@ use ddo::*;
 use fxhash::FxHashMap;
 use regionalization::{RegionalizationRelax, RegionalizationRanking};
 
-
 fn main() {
     //let EU_NUTS1  = CsvReader::from_path("./data/ecodemo_NUTS1.csv").unwrap().finish().unwrap();
     //let EU_NUTS1_cont = CsvReader::from_path("./data/ecodemo_NUTS1_dist.csv").unwrap().finish().unwrap();
@@ -37,6 +36,7 @@ fn main() {
         edge2id: e2id,
         h: 0.12,
     };
+
     let relax = RegionalizationRelax {pb: &problem};
     let ranking = RegionalizationRanking;
 
@@ -50,8 +50,10 @@ fn main() {
         &mut fringe);
     
     let Completion{ is_exact, best_value } = solver.maximize();
-
     println!("is exact ? {is_exact}, best_value : {best_value:?}");
+
+    let solution = solver.best_solution();
+    println!("{solution:?}");
     
 }
 

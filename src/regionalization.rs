@@ -4,7 +4,7 @@ use fxhash::FxHashMap;
 
 use crate::regiostate::{RegionalizationState, EdgeSet};
 
-pub static P : f64 = 10000000.0;
+pub static P : f64 = 100000.0;
 
 #[derive(Debug)]
 pub struct Regionalization {
@@ -106,16 +106,24 @@ impl Problem for Regionalization {
 
 /// Utility functions
 impl Regionalization {
-    fn compute_h(&self, regions: &[usize]) -> f64 {
-        let mean = regions.iter().copied().map(|region| {
-            let row = &self.vertex[region];
-            row.iter().sum::<f64>() / (row.len() as f64)
-        })
-        .collect::<Vec<f64>>();
+    pub fn compute_h(&self, regions: &[usize]) -> f64 {
+        let n_attr = self.vertex[0].len();
+
+        let mut h_values = vec![0.0; n_attr];
+
+        for region in regions {
+            for (i, att) in self.vertex[*region].iter().enumerate() {
+                h_values[i] += *att;
+            }
+        }
+        
+        for v in h_values.iter_mut() {
+            *v /= regions.len() as f64;
+        }
 
         regions.iter().copied().map(|region| {
             let row = &self.vertex[region];
-            row.iter().copied().zip(mean.iter())
+            row.iter().copied().zip(h_values.iter())
                 .map(|(att, meanatt)| (att-meanatt) * (att-meanatt))
                 .sum::<f64>()
         }).sum::<f64>()
