@@ -41,7 +41,7 @@ fn main() {
     let ranking = RegionalizationRanking;
 
     let mut fringe = NoDupFringe::new(MaxUB::new(&ranking));
-    let mut solver = DefaultSolver::new(
+    let mut solver = DefaultBarrierSolver::new(
         &problem, 
         &relax, 
         &ranking, 
