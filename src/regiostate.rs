@@ -1,5 +1,5 @@
 use fixedbitset::FixedBitSet;
-use std::{hash::{Hasher, Hash}, sync::{Arc, atomic::{AtomicU64, Ordering}}};
+use std::hash::{Hasher, Hash};
 
 pub type Regions       = Vec<Vec<usize>>;
 pub type EdgeSet       = FixedBitSet;
@@ -11,7 +11,7 @@ pub struct RegionalizationState {
     edges:   EdgeSet,
     h:       Heterogeneity,
     h_tot:   f64,
-    costs:   Arc<Vec<AtomicU64>>
+    costs:   Vec<f64>
 }
 impl Hash for RegionalizationState {
     fn hash<H: Hasher>(&self, hash: &mut H) {
@@ -24,16 +24,18 @@ impl PartialEq for RegionalizationState {
         self.edges == other.edges
     }
 }
+macro_rules! forgive_me {
+    (store $ty:ty, $value: expr, into $dest: expr) => {
+        unsafe {
+            let dest = &$dest as *const $ty as *mut $ty;
+            *dest = $value;
+         }
+    };
+}
 impl RegionalizationState {
     pub fn new(regions: Regions, edges: EdgeSet, e_max: usize, h: Vec<f64>) -> Self {
         let h_tot = h.iter().sum::<f64>();
-
-        let mut costs = vec![];
-        for _ in 0..e_max {
-            costs.push(AtomicU64::new(0));
-        }
-
-        Self { regions, edges, h, h_tot, costs: Arc::new(costs) }
+        Self { regions, edges, h, h_tot, costs: vec![0.0; e_max]}
     }
     #[inline]
     pub fn regions(&self) -> &Regions {
@@ -57,10 +59,12 @@ impl RegionalizationState {
     }
     #[inline]
     pub fn store_cost(&self, deleted_edge: usize, h_tot: f64) {
-        self.costs[deleted_edge].store(h_tot.to_bits(), Ordering::Relaxed);
+        forgive_me!(store f64, h_tot, into self.costs[deleted_edge]);
+        //self.costs[deleted_edge].store(h_tot.to_bits(), Ordering::Relaxed);
     }
     #[inline]
     pub fn get_cost(&self, deleted_edge: usize) -> f64 {
-        f64::from_bits(self.costs[deleted_edge].load(Ordering::Relaxed))
+        //f64::from_bits(self.costs[deleted_edge].load(Ordering::Relaxed))
+        self.costs[deleted_edge]
     }
 }
