@@ -18,6 +18,7 @@ fn regiorust(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
 }
 
 #[pyclass]
+#[derive(Debug)]
 pub struct RegioSolution {
     pub proved: bool, 
     pub h_tot: f64,
