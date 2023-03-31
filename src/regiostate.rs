@@ -1,4 +1,5 @@
 use fixedbitset::FixedBitSet;
+use fxhash::FxHashMap;
 use std::hash::{Hasher, Hash};
 
 pub type Regions       = Vec<Vec<usize>>;
@@ -11,7 +12,7 @@ pub struct RegionalizationState {
     edges:   EdgeSet,
     h:       Heterogeneity,
     h_tot:   f64,
-    costs:   Vec<f64>
+    costs:   FxHashMap<usize, f64>
 }
 impl Hash for RegionalizationState {
     fn hash<H: Hasher>(&self, hash: &mut H) {
@@ -24,18 +25,10 @@ impl PartialEq for RegionalizationState {
         self.edges == other.edges
     }
 }
-macro_rules! forgive_me {
-    (store $ty:ty, $value: expr, into $dest: expr) => {
-        unsafe {
-            let dest = &$dest as *const $ty as *mut $ty;
-            *dest = $value;
-         }
-    };
-}
 impl RegionalizationState {
-    pub fn new(regions: Regions, edges: EdgeSet, e_max: usize, h: Vec<f64>) -> Self {
+    pub fn new(regions: Regions, edges: EdgeSet, h: Vec<f64>) -> Self {
         let h_tot = h.iter().sum::<f64>();
-        Self { regions, edges, h, h_tot, costs: vec![0.0; e_max]}
+        Self { regions, edges, h, h_tot, costs: FxHashMap::default() }
     }
     #[inline]
     pub fn regions(&self) -> &Regions {
@@ -59,10 +52,15 @@ impl RegionalizationState {
     }
     #[inline]
     pub fn store_cost(&self, deleted_edge: usize, h_tot: f64) {
-        forgive_me!(store f64, h_tot, into self.costs[deleted_edge]);
+        // O borrow checker, forgive me for I will sin
+        unsafe {
+            let costs = &self.costs as *const FxHashMap<usize, f64> as *mut FxHashMap<usize, f64>;
+            let costs = &mut *costs;
+            costs.insert(deleted_edge, h_tot);
+        }
     }
     #[inline]
     pub fn get_cost(&self, deleted_edge: usize) -> f64 {
-        self.costs[deleted_edge]
+        self.costs[&deleted_edge]
     }
 }

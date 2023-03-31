@@ -51,7 +51,7 @@ impl Problem for Regionalization {
         let mut edges = EdgeSet::with_capacity(self.id2edge.len());
         edges.insert_range(0..self.id2edge.len());
 
-        Self::State::new(regions, edges, self.id2edge.len(), h)
+        Self::State::new(regions, edges, h)
     }
 
     fn initial_value(&self) -> isize {
@@ -87,7 +87,7 @@ impl Problem for Regionalization {
             }
         }
 
-        let ret = Self::State::new(regions, edges, self.id2edge.len(), hetero);
+        let ret = Self::State::new(regions, edges, hetero);
         state.store_cost(deleted_edge_id, ret.h_tot());
         ret
     }
@@ -217,7 +217,7 @@ impl Relaxation for RegionalizationRelax<'_> {
             }
         }
 
-        Self::State::new(regions, edges, self.pb.id2edge.len(), hetero)
+        Self::State::new(regions, edges, hetero)
     }
 
     fn relax(

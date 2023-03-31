@@ -16,7 +16,7 @@ def generate_random_inst(vertices, attributes):
         for v in range(vertices) 
     ]
     normalized = [
-        [ denormalized[v][a] / total_w[a] for a in range(attributes) ] 
+        [ denormalized[v][a] / total_w[v] for a in range(attributes) ] 
         for v in range(vertices) 
     ]
     return normalized
@@ -47,13 +47,14 @@ def make_ajdlist(vertices, edges):
 
 def main():
     random.seed(0xCAFECAFE)
-    N_vertices   = 200
-    N_attributes = 200
+    N_vertices   = 300
+    N_attributes = 500
     k            = 10
     vertices     = generate_random_inst(N_vertices, N_attributes)
     edges        = make_spanning_tree(N_vertices)
     neighbors    = make_ajdlist(N_vertices, edges)
     #
+    print("== optimization started ==")
     solution     = rr.solve_regionalization(vertices, neighbors, edges, k, 10, 60)
     print("proved {}".format(solution.proved))
     print("h_tot  {}".format(solution.h_tot))
