@@ -20,8 +20,11 @@ fn regiorust(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
 #[pyclass]
 #[derive(Debug)]
 pub struct RegioSolution {
-    pub proved: bool, 
+    #[pyo3(get)]
+    pub proved: bool,
+    #[pyo3(get)] 
     pub h_tot: f64,
+    #[pyo3(get)]
     pub deleted_edges: Vec<(usize, usize)>
 }
 
