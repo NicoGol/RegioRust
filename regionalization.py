@@ -1,3 +1,13 @@
+'''
+Petit bench de tests sur des instances random pour la decoupe en regions.
+
+=> Pour le caching, utiliser une hashmap dans les etats marche marinalement mieux 
+   qu'un vecteur (j'ai garde ca)
+=> Pour la largeur max des MDD qu'on compile, il vaut mieux utiliser une petite 
+   valeur de W. (C'est cohérent: on utilise les barrieres de Vianney qui 
+   permettent d'eviter pas mal d'explorer deux fois le meme sous-dd).
+'''
+
 import random
 import numpy as np
 import regiorust as rr
@@ -49,13 +59,14 @@ def main():
     random.seed(0xCAFECAFE)
     N_vertices   = 300
     N_attributes = 500
-    k            = 10
+    k            = 15
+    W            = 3#10000000
     vertices     = generate_random_inst(N_vertices, N_attributes)
     edges        = make_spanning_tree(N_vertices)
     neighbors    = make_ajdlist(N_vertices, edges)
     #
     print("== optimization started ==")
-    solution     = rr.solve_regionalization(vertices, neighbors, edges, k, 10, 60)
+    solution     = rr.solve_regionalization(vertices, neighbors, edges, k, W, 60)
     print("proved {}".format(solution.proved))
     print("h_tot  {}".format(solution.h_tot))
 
