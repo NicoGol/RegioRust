@@ -20,7 +20,22 @@ pub struct Regionalization {
     /// initial heterogeneity
     pub h: f64,
 }
+impl Regionalization {
+    pub fn new(
+        vertex: Vec<Vec<f64>>,
+        neighbors: Vec<Vec<usize>>,
+        id2edge: Vec<(usize, usize)>,
+        k: usize,
+    ) -> Self {
+        let h = Self::_compute_h(&vertex, &(0..vertex.len()).collect::<Vec<_>>());
+        let mut edge2id = FxHashMap::default();
+        for (i, e) in id2edge.iter().copied().enumerate() {
+            edge2id.insert(e, i);
+        }
 
+        Self { vertex, k, neighbors, edge2id, id2edge, h }
+    }
+}
 impl Problem for Regionalization {
     type State = RegionalizationState;
 
@@ -106,13 +121,13 @@ impl Problem for Regionalization {
 
 /// Utility functions
 impl Regionalization {
-    pub fn compute_h(&self, regions: &[usize]) -> f64 {
-        let n_attr = self.vertex[0].len();
+    pub fn _compute_h(vertex: &[Vec<f64>], regions: &[usize]) -> f64 {
+        let n_attr = vertex[0].len();
 
         let mut h_values = vec![0.0; n_attr];
 
         for region in regions {
-            for (i, att) in self.vertex[*region].iter().enumerate() {
+            for (i, att) in vertex[*region].iter().enumerate() {
                 h_values[i] += *att;
             }
         }
@@ -122,11 +137,15 @@ impl Regionalization {
         }
 
         regions.iter().copied().map(|region| {
-            let row = &self.vertex[region];
+            let row = &vertex[region];
             row.iter().copied().zip(h_values.iter())
                 .map(|(att, meanatt)| (att-meanatt) * (att-meanatt))
                 .sum::<f64>()
         }).sum::<f64>()
+    }
+
+    pub fn compute_h(&self, regions: &[usize]) -> f64 {
+        Self::_compute_h(&self.vertex, regions)
     }
 
     fn dfs_connected_vertex(&self, root: usize, edges: &EdgeSet) -> Vec<usize> {

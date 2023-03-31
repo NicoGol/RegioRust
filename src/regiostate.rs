@@ -60,11 +60,9 @@ impl RegionalizationState {
     #[inline]
     pub fn store_cost(&self, deleted_edge: usize, h_tot: f64) {
         forgive_me!(store f64, h_tot, into self.costs[deleted_edge]);
-        //self.costs[deleted_edge].store(h_tot.to_bits(), Ordering::Relaxed);
     }
     #[inline]
     pub fn get_cost(&self, deleted_edge: usize) -> f64 {
-        //f64::from_bits(self.costs[deleted_edge].load(Ordering::Relaxed))
         self.costs[deleted_edge]
     }
 }
