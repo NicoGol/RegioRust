@@ -4,7 +4,7 @@ use fxhash::FxHashMap;
 
 use crate::regiostate::{RegionalizationState, EdgeSet};
 
-pub static P : f64 = 100000.0;
+pub static P : f64 = 100000000.0;
 
 #[derive(Debug)]
 pub struct Regionalization {
