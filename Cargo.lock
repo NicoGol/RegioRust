@@ -141,6 +141,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ce7134b9999ecaf8bcd65542e436736ef32ddca1b3e06094cb6ec5755203b80"
 
 [[package]]
+name = "fixedbitset-utils"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4dbde6967cfe744d2838754604de32f6f4de1e948a2404c646dbea83ef17c767"
+dependencies = [
+ "fixedbitset",
+]
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -339,6 +348,7 @@ version = "0.1.0"
 dependencies = [
  "ddo",
  "fixedbitset",
+ "fixedbitset-utils",
  "fxhash",
  "pyo3",
 ]

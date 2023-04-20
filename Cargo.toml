@@ -11,5 +11,6 @@ crate-type = ["cdylib"]
 [dependencies]
 ddo = { git = "https://github.com/xgillard/ddo" }
 fixedbitset = "0.4.2"
+fixedbitset-utils = "0.2.1"
 fxhash = "0.2.1"
 pyo3 = { version = "0.18.2", features = ["extension-module"] }

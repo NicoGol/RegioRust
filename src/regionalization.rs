@@ -1,5 +1,6 @@
 use ddo::{Problem, Variable, Decision, StateRanking, Relaxation};
 use fixedbitset::FixedBitSet;
+use fixedbitset_utils::BitSetIter;
 use fxhash::FxHashMap;
 
 use crate::regiostate::{RegionalizationState, EdgeSet};
@@ -102,11 +103,9 @@ impl Problem for Regionalization {
 
     fn for_each_in_domain(&self, variable: ddo::Variable, state: &Self::State, f: &mut dyn ddo::DecisionCallback) {
         let existing = state.edges();
-        for edge in 0..self.id2edge.len() {
-            if existing.contains(edge) {
-                let value = edge as isize;
-                f.apply(Decision{variable, value})
-            }
+        for edge in BitSetIter::new(existing) {
+            let value = edge as isize;
+            f.apply(Decision{variable, value})
         }
     }
 
@@ -231,12 +230,14 @@ impl Relaxation for RegionalizationRelax<'_> {
         cost
     }
 
-    fn fast_upper_bound(&self, state: &Self::State) -> isize {
-        //let n = self.pb.k - state.n_regions();
-        //let mut h = state.h().clone();
-        //h.sort_unstable_by(|a, b| a.total_cmp(b).reverse());
-        //let result = h.iter().take(n).sum::<f64>();
-        let result = state.h().iter().sum::<f64>();
-        (result * P).round() as isize
-    }
+    // Ditch the RUB: it is too slow to compute
+    // 
+    // fn fast_upper_bound(&self, state: &Self::State) -> isize {
+    //     //let n = self.pb.k - state.n_regions();
+    //     //let mut h = state.h().clone();
+    //     //h.sort_unstable_by(|a, b| a.total_cmp(b).reverse());
+    //     //let result = h.iter().take(n).sum::<f64>();
+    //     let result = state.h().iter().sum::<f64>();
+    //     (result * P).round() as isize
+    // }
 }
