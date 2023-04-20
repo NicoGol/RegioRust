@@ -196,10 +196,9 @@ impl Relaxation for RegionalizationRelax<'_> {
 
     fn merge(&self, states: &mut dyn Iterator<Item = &Self::State>) -> Self::State {
         let mut edges = EdgeSet::with_capacity(self.pb.id2edge.len());
-        edges.insert_range(0..self.pb.id2edge.len());
 
         for state in states {
-            edges &= state.edges();
+            edges |= state.edges();
         }
 
         let mut regions = vec![];
