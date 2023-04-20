@@ -2,7 +2,7 @@ import random
 import numpy as np
 import pandas as pd
 
-def artificial_regions(k,size,n_centers,delta):
+def artificial_regions(k,size,n_centers,delta,mean_range=(1,50)):
     N = size*size
     if n_centers > N or k > N:
         print('too many centers or too many regions')
@@ -10,14 +10,14 @@ def artificial_regions(k,size,n_centers,delta):
     cont_m = contiguity_matrix(size)
     clusters = allocate_object_2_centers(size,n_centers)
     regions = merge_clusters(k,clusters,cont_m)
-    values = assignate_values(k,size,regions,delta,cont_m)
+    values = assignate_values(k,size,regions,delta,cont_m,mean_range)
     vertice2region = np.zeros(N)
     for i,region in enumerate(regions):
         for v in region:
             vertice2region[v] = i
     return values, cont_m, regions, vertice2region
 
-def assignate_values(k,size,regions,delta,cont_m):
+def assignate_values(k,size,regions,delta,cont_m,mean_range):
     N = size * size
     values = np.zeros(N)
     regions_adj = [[] for _ in range(k)]
@@ -27,7 +27,7 @@ def assignate_values(k,size,regions,delta,cont_m):
                 regions_adj[i].append(j)
                 regions_adj[j].append(i)
     regions_means = [None for _ in range(k)]
-    means = set(range(1,51))
+    means = set(range(mean_range[0],mean_range[1]))
     for i in range(k):
         neighbors_means = set()
         for neighbor in regions_adj[i]:
