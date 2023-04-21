@@ -149,14 +149,8 @@
 # print(comp.baseline_h_tot)
 
 
-
-import random
-import numpy as np
 #from redcap import Redcap
 from SCT import SCT
-import pandas as pd
-import time
-import matplotlib.pyplot as plt
 from artificial_regions import *
 
 

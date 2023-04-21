@@ -1,5 +1,6 @@
 from regiostate import RegionalizationState
 import numpy as np
+import queue
 
 
 p = 100000
@@ -38,37 +39,40 @@ class Regionalization:
         return h
 
 
-    def dfs_connected_vertex(self, vertice, edges, parent=None):
-        connected_vertex = [vertice]
-        for neighbor in self.neighbors[vertice]:
-            edge = tuple(sorted([vertice,neighbor]))
-            if edges[edge] :
-                if parent is None or neighbor != parent:
-                    connected_vertex += self.dfs_connected_vertex(neighbor, edges, parent=vertice)
-        return connected_vertex
+    def dfs_connected_vertex(self, vertice, edges):
+        visited = set()
+        q = queue.Queue()
+        visited.add(vertice)
+        q.put(vertice)
+        while not q.empty():
+            v = q.get()
+            for n in self.neighbors[v]:
+                e = tuple(sorted((v, n)))
+                if edges[e] and n not in visited:
+                    visited.add(n)
+                    q.put(n)
+        return list(visited)
 
     def transition(self, state, variable, value):
         edge = self.edges[value]
+        new_edges = state.edges.copy()
+        new_edges[edge] = False
+        new_regions = []
+        new_h = []
         for i,region in enumerate(state.regions):
             if edge[0] in region and edge[1] in region:
-                new_edges = state.edges.copy()
-                new_edges[edge] = False
                 left_region = self.dfs_connected_vertex(edge[0], new_edges)
                 right_region = self.dfs_connected_vertex(edge[1], new_edges)
                 left_h = self.compute_h(left_region)
                 right_h = self.compute_h(right_region)
-                new_regions = []
-                new_h = []
-                for j in range(state.n_regions):
-                    if j == i:
-                        new_regions += [left_region] + [right_region]
-                        new_h += [left_h] + [right_h]
-                        state.transition_costs[value] = state.h[j] - left_h - right_h
-                    else:
-                        new_regions.append(state.regions[j].copy())
-                        new_h.append(state.h[j])
-                return RegionalizationState(new_regions, new_edges, new_h)
-        return None
+                new_regions += [left_region] + [right_region]
+                new_h += [left_h] + [right_h]
+
+                state.transition_costs[value] = state.h[i] - left_h - right_h
+            else:
+                new_regions.append(state.regions[i].copy())
+                new_h.append(state.h[i])
+        return RegionalizationState(new_regions, new_edges, new_h)
 
     def transition_cost(self, state, variable, value):
         if value in state.transition_costs:

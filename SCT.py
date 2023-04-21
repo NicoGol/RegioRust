@@ -1,10 +1,10 @@
 import time as t
-from src.Cluster import Cluster
+from Cluster import Cluster
 from scipy.sparse.csgraph import minimum_spanning_tree
 import numpy as np
 import queue
 import time
-import src.pyregiorust as rr
+import pyregiorust as rr
 
 
 
