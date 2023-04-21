@@ -6,7 +6,7 @@ use nom::{
     combinator::map,
     number::complete::double, 
     multi::separated_list0, 
-    character::complete::{space1, newline, u64}, 
+    character::complete::{space0, space1, line_ending, u64}, 
     IResult, 
     sequence::{separated_pair}
 };
@@ -128,25 +128,25 @@ enum Error {
 
 fn parse_vertex_matrix(data: &str) -> IResult<&str, Vec<Vec<f64>>> {
     // parse all lines
-    separated_list0(newline, 
+    separated_list0(line_ending, 
         // parser for one line
-        separated_list0(space1, double)
+        separated_list0(space0, double)
     )(data)
 }
 
 fn parse_neighbor_adjlist(data: &str) -> IResult<&str, Vec<Vec<usize>>> {
     // parse all lines
-    separated_list0(newline, 
+    separated_list0(line_ending, 
         // parser for one line
-        separated_list0(space1, usize)
+        separated_list0(space0, usize)
     )(data)
 }
 
 fn parse_edges(data: &str) -> IResult<&str, Vec<(usize, usize)>> {
     // parse all lines
-    separated_list0(newline, 
+    separated_list0(line_ending, 
         // parser for one line
-        separated_pair(usize, space1, usize)
+        separated_pair(usize, space0, usize)
     )(data)
 }
 
