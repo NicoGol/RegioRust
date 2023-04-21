@@ -1,8 +1,8 @@
 # import random
 # import numpy as np
 # import regiorust as rr
-# from src.redcap import Redcap
-# from src.SCT import SCT
+# from redcap import Redcap
+# from SCT import SCT
 # import pandas as pd
 # import time
 # import matplotlib.pyplot as plt
@@ -152,12 +152,12 @@
 
 import random
 import numpy as np
-#from src.redcap import Redcap
-from src.SCT import SCT
+#from redcap import Redcap
+from SCT import SCT
 import pandas as pd
 import time
 import matplotlib.pyplot as plt
-from src.artificial_regions import *
+from artificial_regions import *
 
 
 k,size,n_centers,delta,n = 10,10,40,2,10
