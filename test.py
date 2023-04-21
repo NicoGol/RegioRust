@@ -163,12 +163,11 @@ from src.artificial_regions import *
 
 k,size,n_centers,delta,n = 10,10,40,2,10
 i = 3
-cont_m = pd.read_pickle('./data/artificial_datasets/size{}_cont.pkl'.format(size))
-
-df = pd.read_pickle(
-    './data/artificial_datasets/size{}_k{}_centers{}_delta{}_{}.pkl'.format(size, k, n_centers, delta, i))
-dist_m = pd.read_pickle(
-    './data/artificial_datasets/size{}_k{}_centers{}_delta{}_{}_dist.pkl'.format(size, k, n_centers, delta, i))
+cont_m = pd.read_json('./data/artificial_datasets/size{}_cont.json'.format(size))
+df = pd.read_json(
+    './data/artificial_datasets/size{}_k{}_centers{}_delta{}_{}.json'.format(size, k, n_centers, delta, i))
+dist_m = pd.read_json(
+    './data/artificial_datasets/size{}_k{}_centers{}_delta{}_{}_dist.json'.format(size, k, n_centers, delta, i))
 vertices = df['val']
 sct = SCT(vertices, cont_m, dist_m)
 
@@ -178,4 +177,3 @@ h_tot2, regions2, regions_h2, _, del_edges2, partition_time2 = sct.partition(k, 
 print(h_tot,h_tot2)
 print([edge for edge in edges_removed if edge not in del_edges2])
 print([edge for edge in del_edges2 if edge not in edges_removed])
-

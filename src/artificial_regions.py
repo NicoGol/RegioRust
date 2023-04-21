@@ -2,7 +2,7 @@ import random
 import numpy as np
 import pandas as pd
 
-def artificial_regions(k,size,n_centers,delta,mean_range=(1,50)):
+def artificial_regions(k,size,n_centers,delta,mean_range=50):
     N = size*size
     if n_centers > N or k > N:
         print('too many centers or too many regions')
@@ -27,7 +27,7 @@ def assignate_values(k,size,regions,delta,cont_m,mean_range):
                 regions_adj[i].append(j)
                 regions_adj[j].append(i)
     regions_means = [None for _ in range(k)]
-    means = set(range(mean_range[0],mean_range[1]))
+    means = set(range(1,mean_range+1))
     for i in range(k):
         neighbors_means = set()
         for neighbor in regions_adj[i]:
@@ -94,10 +94,10 @@ def merge_clusters(k,clusters,cont_m):
             clusters = new_clusters
     return clusters
 
-def save_artificial_datasets(k,size,n_centers,delta,n):
+def save_artificial_datasets(k,size,n_centers,delta,n,mean_range=50):
     N = size*size
     for id in range(n):
-        values, cont_m, regions, vertice2region = artificial_regions(k, size, n_centers, delta)
+        values, cont_m, regions, vertice2region = artificial_regions(k, size, n_centers, delta, mean_range=mean_range)
         df = pd.DataFrame(np.array([values,vertice2region]).transpose(),columns=['val','region'])
         dist_m = np.zeros((N,N))
         for i in range(N-1):
@@ -105,7 +105,7 @@ def save_artificial_datasets(k,size,n_centers,delta,n):
                 d = (values[i]-values[j])**2
                 dist_m[i,j] = d
                 dist_m[j,i] = d
-        df.to_pickle('./data/artificial_datasets/size{}_k{}_centers{}_delta{}_{}.pkl'.format(size,k,n_centers,delta,id))
-        pd.DataFrame(dist_m).to_pickle('./data/artificial_datasets/size{}_k{}_centers{}_delta{}_{}_dist.pkl'.format(size,k,n_centers,delta,id))
-        pd.DataFrame(cont_m).to_pickle('./data/artificial_datasets/size{}_cont.pkl'.format(size))
+        df.to_json('./data/artificial_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}.json'.format(size,k,n_centers,delta,mean_range,id))
+        pd.DataFrame(dist_m).to_json('./data/artificial_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}_dist.json'.format(size,k,n_centers,delta,mean_range,id))
+        pd.DataFrame(cont_m).to_json('./data/artificial_datasets/size{}_cont.json'.format(size))
 
