@@ -4,7 +4,7 @@ from scipy.sparse.csgraph import minimum_spanning_tree
 import numpy as np
 import queue
 import time
-import regiorust as rr
+import src.pyregiorust as rr
 
 
 
@@ -150,7 +150,7 @@ class SCT:
             solution = rr.solve_regionalization(vertices_list, neighbors_list, self.edges, k, W, cutoff)
             partition_time = time.time() - t1
             self.times['mdd_partition'] = partition_time
-            h_tot, proved_exact, edges_removed = solution.h_tot, solution.proved, solution.deleted_edges
+            #h_tot, proved_exact, edges_removed = solution.h_tot, solution.proved, solution.deleted_edges
         elif method == 'redcap':
             t1 = time.time()
             h_tot, regions, regions_h, edges_removed = self.redcap(k)
