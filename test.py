@@ -152,7 +152,6 @@
 
 import random
 import numpy as np
-import regiorust as rr
 #from src.redcap import Redcap
 from src.SCT import SCT
 import pandas as pd
