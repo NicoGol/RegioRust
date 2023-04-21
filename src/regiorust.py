@@ -23,5 +23,6 @@ def  solve_regionalization(vertex, neighbors, id2edge, k, w, timeout):
             f.write(' ')
             f.write(str(d))
             f.write('\n')
-    os.execv("./target/release/regiorust", "-v vertices.txt -n neighbors.txt -i id2edge.txt -k {k} -w {w} -t {timeout}".format(k=k, w=w, timeout=timeout))
+    os.system("./target/release/regiorust -v example_vertex.txt -n example_neighbors.txt -i example_edges.txt -k {} -w {} -t {}".format(
+        k, w, timeout))
     #return None
