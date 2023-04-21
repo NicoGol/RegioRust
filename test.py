@@ -164,9 +164,9 @@ dist_m = pd.read_json(
 vertices = df['val']
 sct = SCT(vertices, cont_m, dist_m)
 
-h_tot, _, _, proved_exact, edges_removed, partition_time = sct.partition(k, 'mdd')
-#regions, regions_h = sct.del_edges_2_regions(edges_removed)
-#h_tot2, regions2, regions_h2, _, del_edges2, partition_time2 = sct.partition(k, 'redcap')
-#print(h_tot,h_tot2)
+h_tot, regions, regions_h, proved_exact, edges_removed, partition_time = sct.partition(k, 'mdd')
+
+h_tot2, regions2, regions_h2, _, del_edges2, partition_time2 = sct.partition(k, 'redcap')
+print(h_tot,h_tot2)
 #print([edge for edge in edges_removed if edge not in del_edges2])
 #print([edge for edge in del_edges2 if edge not in edges_removed])

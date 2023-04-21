@@ -1,4 +1,5 @@
 use std::{time::Duration, fs::read_to_string};
+use std::fs;
 
 use clap::Parser;
 use ddo::*;
@@ -109,11 +110,10 @@ fn main() -> Result<(), Error> {
 
     if let Some(RegioSolution{proved, h_tot, deleted_edges}) = solution {
         let status = if proved { "proved" } else { "current-best" };
-        println!("\"{status}\", {h_tot}, \"{deleted_edges:?}\"")
+        fs::write("./result.txt", format!("{} | {} | {:?}",status,h_tot,deleted_edges)).expect("Unable to write file");
     } else {
-        println!("\"no-solution\", +inf, \"[]\"")
+        fs::write("./result.txt", "no-solution | +inf | []").expect("Unable to write file");
     }
-
     Ok(())
 }
 

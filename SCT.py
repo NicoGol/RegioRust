@@ -147,10 +147,10 @@ class SCT:
                 vertices_list = [[val] for val in vertices_list]
             neighbors_list = [adj for adj in self.neighbors.values()]
             t1 = time.time()
-            solution = rr.solve_regionalization(vertices_list, neighbors_list, self.edges, k, W, cutoff)
+            h_tot, proved_exact, edges_removed = rr.solve_regionalization(vertices_list, neighbors_list, self.edges, k, W, cutoff)
             partition_time = time.time() - t1
             self.times['mdd_partition'] = partition_time
-            #h_tot, proved_exact, edges_removed = solution.h_tot, solution.proved, solution.deleted_edges
+            regions, regions_h = self.del_edges_2_regions(edges_removed)
         elif method == 'redcap':
             t1 = time.time()
             h_tot, regions, regions_h, edges_removed = self.redcap(k)

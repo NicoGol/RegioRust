@@ -30,4 +30,13 @@ def  solve_regionalization(vertex, neighbors, id2edge, k, w, timeout):
                 f.write('\n')
     os.system("./target/release/regiorust -v vertices.txt -n neighbors.txt -i id2edge.txt -k {} -w {} -t {}".format(
         k, w, timeout))
-    #return None
+    with open('result.txt') as f:
+        line = f.read().split(' | ')
+        proved_exact = line[0]
+        h_tot = float(line[1])
+        edges_removed = []
+        if len(line[2]) > 2:
+            for edge in line[2][2:-2].split('), ('):
+                vertices = edge.split(', ')
+                edges_removed.append((int(vertices[0]),int(vertices[1])))
+    return h_tot, proved_exact, edges_removed
