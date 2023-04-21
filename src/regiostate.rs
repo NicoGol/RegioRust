@@ -34,7 +34,7 @@ impl RegionalizationState {
     pub fn regions(&self) -> &Regions {
         &self.regions
     }
-    #[inline]#[cfg(allow_dead_code)]
+    #[inline]
     pub fn n_regions(&self) -> usize {
         self.regions.len()
     }
