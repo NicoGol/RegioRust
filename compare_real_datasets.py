@@ -63,12 +63,12 @@ def compare(dataset, K, sct_methods, W, cutoffs, talk=False):
                         print('cutoff = {}'.format(cutoff))
                     h_tot, regions, regions_h, proved_exact, edges_removed, partition_time = sct.partition(k, 'mdd', W=w, cutoff=cutoff)
                     results.loc[len(results)] = [dataset, k, 'mdd', sct_method, w, cutoff, proved_exact, h_tot, regions, regions_h, edges_removed, partition_time]
-            if sct_method == 'full_order_CL':
-                h_tot, regions, regions_h, _, partition_time = pg_regio(dataset, k, sct)
-                results.loc[len(results)] = [dataset, k, 'redcap', sct_method, None, None, False, h_tot, regions, regions_h,None, partition_time]
-            elif sct_method == 'MST':
-                h_tot, regions, regions_h, _, partition_time = pg_regio(dataset, k, sct, method='skater')
-                results.loc[len(results)] = [dataset, k, 'skater', sct_method, None, None, False, h_tot, regions, regions_h,None, partition_time]
+            # if sct_method == 'full_order_CL':
+            #     h_tot, regions, regions_h, _, partition_time = pg_regio(dataset, k, sct)
+            #     results.loc[len(results)] = [dataset, k, 'redcap', sct_method, None, None, False, h_tot, regions, regions_h,None, partition_time]
+            # elif sct_method == 'MST':
+            #     h_tot, regions, regions_h, _, partition_time = pg_regio(dataset, k, sct, method='skater')
+            #     results.loc[len(results)] = [dataset, k, 'skater', sct_method, None, None, False, h_tot, regions, regions_h,None, partition_time]
     return results
 
 if __name__ == '__main__':
