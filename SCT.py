@@ -17,6 +17,7 @@ class SCT:
         self.times = {}
         if isinstance(data,str):
             self.vertices = pd.read_json('./data/'+data+'/'+data+'.json')
+            self.vertices = self.vertices.sort_index()
             self.name = data
             if method == 'full_order_CL':
                 if Path('./data/'+data+'/'+data+'_sct.csv').is_file():
