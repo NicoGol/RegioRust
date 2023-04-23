@@ -82,8 +82,8 @@ if __name__ == '__main__':
   args = parser.parse_args()
   K = [5,10,15,20]
   dataset = args.d
-  W = args.w if args.w != None else [5]
-  cutoffs = args.c if args.c != None else [60]
+  W = [int(w) for w in args.w.split(',')] if args.w != None else [5]
+  cutoffs = [int(c) for c in args.c.split(',')] if args.c != None else [60]
   talk = (args.t != None)
   filename = args.f if args.f != None else dataset+'_result'
   df = compare(dataset,K,['full_order_CL','MST'],W,cutoffs,talk)
