@@ -5,23 +5,45 @@ import numpy as np
 import queue
 import time
 import pyregiorust as rr
+import pandas as pd
+from pathlib import Path
 
 
 
 class SCT:
-    def __init__(self, vertices, contiguity_matrix, distance_matrix, method = 'full_order_CL',talk=False):
-        self.cont_m = contiguity_matrix
-        self.dist = distance_matrix
-        self.vertices = vertices
+    def __init__(self, data, contiguity_matrix=None, distance_matrix=None, method = 'full_order_CL',talk=False):
+        self.method = method
         self.talk = talk
         self.times = {}
-        self.method = method
-        if method == 'full_order_CL':
-            self.edges, self.neighbors = self.find_SCT_full_order_CL()
-        elif method == 'MST':
-            self.edges, self.neighbors = self.find_MST()
+        if isinstance(data,str):
+            self.vertices = pd.read_json('./data/'+data+'/'+data+'.json')
+            self.name = data
+            if method == 'full_order_CL':
+                if Path('./data/'+data+'/'+data+'_sct.csv').is_file():
+                    self.edges, self.neighbors = self.read_file()
+                else:
+                    self.cont_m = pd.read_json('./data/' + data + '/' + data + '_cont.json')
+                    self.dist = pd.read_json('./data/' + data + '/' + data + '_dist.json')
+                    self.edges, self.neighbors = self.find_SCT_full_order_CL()
+            elif method == 'MST':
+                if Path('./data/'+data+'/'+data+'_mst.csv').is_file():
+                    self.edges, self.neighbors = self.read_file()
+                else:
+                    self.cont_m = pd.read_json('./data/' + data + '/' + data + '_cont.json')
+                    self.dist = pd.read_json('./data/' + data + '/' + data + '_dist.json')
+                    self.edges, self.neighbors = self.find_MST()
+            else:
+                raise Exception('Wrong SCT method, must be full_order_CL or MST')
         else:
-            raise Exception('Wrong SCT method, must be full_order_CL or MST')
+            self.cont_m = contiguity_matrix
+            self.dist = distance_matrix
+            self.vertices = data
+            if method == 'full_order_CL':
+                self.edges, self.neighbors = self.find_SCT_full_order_CL()
+            elif method == 'MST':
+                self.edges, self.neighbors = self.find_MST()
+            else:
+                raise Exception('Wrong SCT method, must be full_order_CL or MST')
 
     def create_clusters(self):
         clusters = {}
@@ -219,3 +241,38 @@ class SCT:
                 regions.append(region)
                 regions_h.append(self.compute_h(region))
         return regions, regions_h
+
+    def to_file(self):
+        path = './data/'+self.name+'/'+self.name+'_sct.csv'
+        if self.method == 'MST':
+            path = './data/'+self.name+'/'+self.name+'_mst.csv'
+        with open(path,'w') as f:
+            for i,edge in enumerate(self.edges):
+                f.write(str(edge[0])+','+str(edge[1]))
+                if i < len(self.edges) -1:
+                    f.write(' ')
+            f.write('\n')
+            for i,n in self.neighbors.items():
+                for j,v in enumerate(n):
+                    f.write(str(v))
+                    if j < len(n) -1:
+                        f.write(' ')
+                if i < len(self.neighbors) -1:
+                    f.write('\n')
+
+    def read_file(self):
+        path = './data/' + self.name + '/' + self.name + '_sct.csv'
+        if self.method == 'MST':
+            path = './data/' + self.name + '/' + self.name + '_mst.csv'
+        edges = []
+        neighbors = {v : [] for v in self.vertices.index}
+        with open(path) as f:
+            lines = f.readlines()
+            es = lines[0].split(' ')
+            for edge in es:
+                v = edge.split(',')
+                edges.append((int(v[0]),int(v[1])))
+            for i,n in enumerate(lines[1:]):
+                for v in n.split(' '):
+                    neighbors[i].append(int(v))
+        return edges, neighbors
