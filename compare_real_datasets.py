@@ -22,7 +22,7 @@ columns = ['dataset', 'k', 'model', 'sct_method', 'W', 'cutoff', 'proved_exact',
 def pg_regio(dataset,k,sct,method="fullorder-completelinkage",talk=False):
     if talk:
         print('start redcap')
-    vertices = pd.read_pickle('./data/'+dataset+'/'+dataset+'.pkl')
+    vertices = pd.read_json('./data/'+dataset+'/'+dataset+'.json')
     t1 = time.time()
     pg_dataset = pg.open(vertices)
     w = pg.queen_weights(pg_dataset)
