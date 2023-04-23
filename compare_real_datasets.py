@@ -1,10 +1,10 @@
 from SCT import SCT
-import matplotlib.pyplot as plt
 import time
 import pandas as pd
 import numpy as np
 import pygeoda as pg
 import argparse
+from pathlib import Path
 
 
 dataset2cols = {'ecodemo_NUTS1': ['density', 'gdp_inhabitant', 'median_age', 'rate_migration'],
@@ -46,8 +46,9 @@ def pg_regio(dataset,k,sct,method="fullorder-completelinkage",talk=False):
 
 
 
-def compare(dataset, K, sct_methods, W, cutoffs, talk=False):
-    results = pd.DataFrame(columns=columns)
+def compare(dataset, K, sct_methods, W, cutoffs, results = None, talk=False):
+    if results is None:
+        results = pd.DataFrame(columns=columns)
     for sct_method in sct_methods:
         if talk:
             print('sct method = {}'.format(sct_method))
@@ -81,12 +82,17 @@ if __name__ == '__main__':
 
   args = parser.parse_args()
   K = [5,10,15,20]
-  dataset = args.d
+  datasets = [d for d in args.d.split(',')]
   W = [int(w) for w in args.w.split(',')] if args.w != None else [5]
   cutoffs = [int(c) for c in args.c.split(',')] if args.c != None else [60]
   talk = (args.t != None)
-  filename = args.f if args.f != None else dataset+'_result'
-  df = compare(dataset,K,['full_order_CL','MST'],W,cutoffs,talk)
+  filenames = args.f if args.f != None else [dataset+'_result' for dataset in datasets]
+  for i,dataset in enumerate(datasets):
+    print(dataset)
+    results = None
+    if Path('./data/'+dataset+'/'+filenames[i]+'.csv').is_file():
+        results = pd.read_csv('./data/'+dataset+'/'+filenames[i]+'.csv',index_col=0)
+    df = compare(dataset,K,['full_order_CL','MST'],W,cutoffs,results,talk)
 
-  df.to_csv('./data/'+dataset+'/'+filename+'.csv')
+    df.to_csv('./data/'+dataset+'/'+filenames[i]+'.csv')
 
