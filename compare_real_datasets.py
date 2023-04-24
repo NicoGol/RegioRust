@@ -92,7 +92,7 @@ if __name__ == '__main__':
     results = None
     if Path('./data/'+dataset+'/'+filenames[i]+'.csv').is_file():
         results = pd.read_csv('./data/'+dataset+'/'+filenames[i]+'.csv',index_col=0)
-    df = compare(dataset,K,['full_order_CL','MST'],W,cutoffs,results,talk)
+    df = compare(dataset,K,['full_order_CL'],W,cutoffs,results,talk)
 
     df.to_csv('./data/'+dataset+'/'+filenames[i]+'.csv')
 
