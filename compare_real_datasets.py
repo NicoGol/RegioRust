@@ -64,6 +64,7 @@ def compare(dataset, K, sct_methods, W, cutoffs, results = None, talk=False):
                         print('cutoff = {}'.format(cutoff))
                     h_tot, regions, regions_h, proved_exact, edges_removed, partition_time = sct.partition(k, 'mdd', W=w, cutoff=cutoff)
                     results.loc[len(results)] = [dataset, k, 'mdd', sct_method, w, cutoff, proved_exact, h_tot, regions, regions_h, edges_removed, partition_time]
+                    print(h_tot)
             # if sct_method == 'full_order_CL':
             #     h_tot, regions, regions_h, _, partition_time = pg_regio(dataset, k, sct)
             #     results.loc[len(results)] = [dataset, k, 'redcap', sct_method, None, None, False, h_tot, regions, regions_h,None, partition_time]
