@@ -4,7 +4,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 def percentage_bush_2004(states='all'):
-    df = pd.read_csv('../data/countypres_2000-2020.csv')
+    df = pd.read_csv('./data/countypres_2000-2020.csv')
     df_2004 = df.loc[(df.year==2004) & (df.party=='REPUBLICAN')]
     if states != 'all':
         df_2004 = df_2004.loc[df_2004.state.isin(states)]
@@ -30,7 +30,7 @@ def percentage_bush_2004(states='all'):
 def ecodemoEurope(indicators,year,level):
     df = None
     for ind in indicators:
-        df_ind = pd.read_csv('../data/EcoDemoEurope/'+ind+'.csv')[['geo','TIME_PERIOD','OBS_VALUE']]
+        df_ind = pd.read_csv('./data/EcoDemoEurope/'+ind+'.csv')[['geo','TIME_PERIOD','OBS_VALUE']]
         df_ind.rename(columns={'OBS_VALUE':ind},inplace=True)
         if df is None:
             df = df_ind
@@ -64,8 +64,11 @@ def ecodemoEurope(indicators,year,level):
     gdf = gdf.loc[visited]
     return gdf
 
-def ecoregions():
-    gdf = geopandas.read_file('../data/Ecoregions/Ecoregions.shp')
+def ecoregions(indicators):
+    gdf = geopandas.read_file('./data/Ecoregions/Ecoregions.shp')
+    to_remove = [12, 15, 18, 19, 25, 35, 47, 56, 61, 160, 165, 174, 177, 184]
+    gdf = gdf.loc[[i for i in range(len(gdf)) if i not in to_remove]]
+    gdf = gdf.reset_index()
     gdf['neighbors'] = [[] for _ in range(len(gdf))]
     for index, row in gdf.iterrows():
         # get 'not disjoint' countries
@@ -74,13 +77,12 @@ def ecoregions():
 
         # add names of neighbors as NEIGHBORS value
         gdf.at[index, 'neighbors'] = neighbors
-    indicators = gdf.columns[:15]
     scaler = MinMaxScaler()
     gdf[indicators] = scaler.fit_transform(gdf[indicators])
     return gdf
 
 def education_BE():
-    df = pd.read_excel('../data/EcoBelgium/BE_Education_2017.xlsx')
+    df = pd.read_excel('./data/EcoBelgium/BE_Education_2017.xlsx')
     gdf = geopandas.read_file('../data/EcoBelgium/communes-belges-2019.shp')
     gdf[['EDU_LOW_r','EDU_MID_r','EDU_HIGH_r']] = None
     gdf['niscode'] = pd.to_numeric(gdf['niscode'])
