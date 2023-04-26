@@ -157,7 +157,7 @@ class Evaluation:
 
 
 def evaluate(size, k, n_centers, delta, n, mean_range=50, sct_method='full_order_CL', W=5, cutoff=60, talk=False):
-    cont_m = pd.read_json('./data/artificial_datasets/size{}_cont.json'.format(size))
+    cont_m = pd.read_json('./data/synthetic_datasets/size{}_cont.json'.format(size))
     vertices_values = []
     true_R, true_h_tot = [], []
     mdd_h_tot, mdd_regions, mdd_regions_h, mdd_proved_exact, mdd_del_e, mdd_times = [], [], [], [], [], []
@@ -165,10 +165,10 @@ def evaluate(size, k, n_centers, delta, n, mean_range=50, sct_method='full_order
     for i in range(n):
         print('map ' + str(i))
         df = pd.read_json(
-            './data/artificial_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}.json'.format(size, k, n_centers, delta,
+            './data/synthetic_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}.json'.format(size, k, n_centers, delta,
                                                                                          mean_range, i))
         dist_m = pd.read_json(
-            './data/artificial_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}_dist.json'.format(size, k, n_centers, delta,
+            './data/synthetic_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}_dist.json'.format(size, k, n_centers, delta,
                                                                                               mean_range, i))
         vertices = df['val']
         vertices_values.append(vertices)
@@ -225,8 +225,8 @@ def pg_regio(sct,k,method='full_order_CL',talk=False):
     return h_tot, regions, regions_h, None, t2-t1
 
 def eval_variate_param(k,sizes,n_centers,deltas,n,mean_ranges,W,cutoffs,filename):
-    if Path('./data/artificial_datasets/' + filename + '.csv').is_file():
-        results = pd.read_csv('./data/artificial_datasets/' + filename + '.csv', index_col=0)
+    if Path('./data/synthetic_datasets/' + filename + '.csv').is_file():
+        results = pd.read_csv('./data/synthetic_datasets/' + filename + '.csv', index_col=0)
     else:
         results = pd.DataFrame(columns=columns)
     for size in sizes:
@@ -244,7 +244,7 @@ def eval_variate_param(k,sizes,n_centers,deltas,n,mean_ranges,W,cutoffs,filename
                             #save_artificial_datasets(k, size, n_center, delta, n, mean_range)
                             eva = evaluate(size, k, n_center, delta, n, mean_range, W=w, cutoff=cutoff)
                             results.loc[len(results)] = eva.to_list()
-                            results.to_csv('./data/artificial_datasets/' + filename + '.csv')
+                            results.to_csv('./data/synthetic_datasets/' + filename + '.csv')
     return results
 
 
