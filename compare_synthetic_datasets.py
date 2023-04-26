@@ -241,7 +241,7 @@ def eval_variate_param(k,sizes,n_centers,deltas,n,mean_ranges,W,cutoffs,filename
                         print('W = ' + str(w))
                         for cutoff in cutoffs:
                             print('cutoff = ' + str(cutoff))
-                            save_artificial_datasets(k, size, n_center, delta, n, mean_range)
+                            #save_artificial_datasets(k, size, n_center, delta, n, mean_range)
                             eva = evaluate(size, k, n_center, delta, n, mean_range, W=w, cutoff=cutoff)
                             results.loc[len(results)] = eva.to_list()
                             results.to_csv('./data/synthetic_datasets/' + filename + '.csv')
