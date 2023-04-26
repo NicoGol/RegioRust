@@ -80,9 +80,10 @@ if __name__ == '__main__':
   parser.add_argument("-c", help="cutoff for the mdd")
   parser.add_argument("-f", help="name of the output file")
   parser.add_argument("-t", help='talk')
+  parser.add_argument("-k", help="number of regions")
 
   args = parser.parse_args()
-  K = [5,10,15,20]
+  K = [int(k) for k in args.k.split(',')] if args.k != None else[5,10,15,20]
   datasets = [d for d in args.d.split(',')]
   W = [int(w) for w in args.w.split(',')] if args.w != None else [5]
   cutoffs = [int(c) for c in args.c.split(',')] if args.c != None else [60]
