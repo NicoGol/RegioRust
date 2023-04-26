@@ -66,7 +66,7 @@ def allocate_object_2_centers(size,n_centers):
             min_dist = N
             center = None
             for id, (c_x, c_y) in enumerate(centers):
-                dist = (i - c_x)^2 + (j - c_y)^2
+                dist = abs(i - c_x) + abs(j - c_y)
                 if dist < min_dist:
                     min_dist = dist
                     center = id
@@ -105,7 +105,7 @@ def save_artificial_datasets(k,size,n_centers,delta,n,mean_range=50):
                 d = (values[i]-values[j])**2
                 dist_m[i,j] = d
                 dist_m[j,i] = d
-        df.to_json('./data/synthetic_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}.json'.format(size,k,n_centers,delta,mean_range,id))
-        pd.DataFrame(dist_m).to_json('./data/synthetic_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}_dist.json'.format(size,k,n_centers,delta,mean_range,id))
-        pd.DataFrame(cont_m).to_json('./data/synthetic_datasets/size{}_cont.json'.format(size))
+        df.to_json('./data/artificial_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}.json'.format(size,k,n_centers,delta,mean_range,id))
+        pd.DataFrame(dist_m).to_json('./data/artificial_datasets/size{}_k{}_centers{}_delta{}_mr{}_{}_dist.json'.format(size,k,n_centers,delta,mean_range,id))
+        pd.DataFrame(cont_m).to_json('./data/artificial_datasets/size{}_cont.json'.format(size))
 
