@@ -230,12 +230,12 @@ impl Relaxation for RegionalizationRelax<'_> {
     }
 
     // if this is too slow, then just ditch it.
-    // fn fast_upper_bound(&self, state: &Self::State) -> isize {
-    //     let n = self.pb.k - state.n_regions();
-    //     let mut h = state.h().clone();
-    //     h.sort_unstable_by(|a, b| a.total_cmp(b).reverse());
-    //     let result = h.iter().take(n).sum::<f64>();
-    //     //let result = state.h().iter().sum::<f64>();
-    //     (result * P).round() as isize
-    // }
+    fn fast_upper_bound(&self, state: &Self::State) -> isize {
+        let n = self.pb.k - state.n_regions();
+        let mut h = state.h().clone();
+        h.sort_unstable_by(|a, b| a.total_cmp(b).reverse());
+        let result = h.iter().take(n).sum::<f64>();
+        //let result = state.h().iter().sum::<f64>();
+        (result * P).round() as isize
+    }
 }
